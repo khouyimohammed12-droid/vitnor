@@ -412,32 +412,33 @@ function sendOrder() {
   var sku = document.getElementById('f-sku').value;
   var discount = qty >= 2 ? 0.10 : 0;
   var total = Math.round(qty * price * (1 - discount));
+  var saved = Math.round(qty * price * discount);
   var discountLabel = qty >= 2 ? 'خصم 10%' : 'لا يوجد';
 
   btn.disabled = true;
   btn.textContent = 'جاري الإرسال...';
 
+  // Show thank you IMMEDIATELY — don't wait for Google
+  showThankYou(name, phone, city, qty, total, saved, discountLabel, note);
+
+  // Send to Google Sheet in background
+  var payload = JSON.stringify({
+    nome: name,
+    telefono: phone,
+    citta: city,
+    sku: sku,
+    quantita: qty,
+    sconto: discountLabel,
+    totale: total + ' درهم',
+    note: note || '—'
+  });
+
   fetch('https://script.google.com/macros/s/AKfycbxnd1pK36psQAPOOoJ7UCTSMWi6wuPbO5RstWxJUX8G5RM0vD3hkuh9WyhQ1dmuP2F7/exec', {
     method: 'POST',
     mode: 'no-cors',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({
-      nome: name,
-      telefono: phone,
-      citta: city,
-      sku: sku,
-      quantita: qty,
-      sconto: discountLabel,
-      totale: total + ' درهم',
-      note: note || '—'
-    })
-  })
-  .then(function() {
-    showThankYou(name, phone, city, qty, total, discountLabel, note);
-  })
-  .catch(function() {
-    showThankYou(name, phone, city, qty, total, discountLabel, note);
-  });
+    headers: {'Content-Type': 'text/plain'},
+    body: payload
+  }).catch(function() {});
 }
 
 function showThankYou(name, phone, city, qty, total, note) {
