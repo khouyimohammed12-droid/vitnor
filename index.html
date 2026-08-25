@@ -668,6 +668,14 @@ src="https://www.facebook.com/tr?id=1299485975463805&ev=PageView&noscript=1"/></
 </div>
 
 <script>
+/* ═══════════════════════════════════════════════════════════
+   INDIRIZZO GOOGLE APPS SCRIPT
+   Sostituisci SOLO la riga qui sotto con il tuo nuovo URL
+   (quello che finisce con /exec)
+   ═══════════════════════════════════════════════════════════ */
+var ORDER_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwQYE2Tz4cI3cQ-s58FyDIMfr2VwfTOlCzrHHfRNZDGOazBk8PZNJu_RWGC4JDfDVuZgg/exec';
+/* ═══════════════════════════════════════════════════════════ */
+
 var FB_CURRENCY = 'MAD';
 
 function getParam(k) {
@@ -888,7 +896,7 @@ function sendOrder() {
     referrer: document.referrer || ''
   });
 
-  fetch('https://script.google.com/macros/s/AKfycbxnd1pK36psQAPOOoJ7UCTSMWi6wuPbO5RstWxJUX8G5RM0vD3hkuh9WyhQ1dmuP2F7/exec', {
+  fetch(ORDER_ENDPOINT, {
     method: 'POST',
     mode: 'no-cors',
     headers: { 'Content-Type': 'text/plain' },
