@@ -359,7 +359,7 @@ src="https://www.facebook.com/tr?id=1299485975463805&ev=PageView&noscript=1"/></
 </div>
 <span class="label-id">VTN—02 · للإرهاق ونقص الحديد</span>
 <h3 class="label-name kufi">Fer + Vitamine C</h3>
-<p class="label-benefit">كتنعس مزيان وكتفيق عيان؟ ملي الحديد ناقص، الأوكسجين ما كيوصلش بزاف لعضلاتك ودماغك. الحديد كيتشرب بسرعة وما كيقرصش المعدة بحال الأنواع الأخرى.</p>
+<p class="label-benefit">كتنعس مزيان وكتفيق عيان؟ ملي الحديد ناقص، الأوكسجين ما كيوصلش بزاف لعضلاتك ودماغك. بيسغليسينات الحديد كيتشرب بسرعة وما كيقرصش المعدة بحال الأنواع الأخرى.</p>
 <div class="actives">
 <span class="active-tag">Fer bisglycinate 50mg</span><span class="active-tag">Vit C 100mg</span><span class="active-tag">Vit B12 75mg</span><span class="active-tag">Acide folique 100mg</span><span class="active-tag">Spiruline 175mg</span>
 </div>
@@ -670,6 +670,10 @@ src="https://www.facebook.com/tr?id=1299485975463805&ev=PageView&noscript=1"/></
 <script>
 var FB_CURRENCY = 'MAD';
 
+function getParam(k) {
+  try { return new URLSearchParams(window.location.search).get(k) || ''; } catch (e) { return ''; }
+}
+
 function fbTrack(event, params) {
   try { if (window.fbq) fbq('track', event, params || {}); } catch (e) {}
 }
@@ -865,12 +869,23 @@ function sendOrder() {
     nome: name,
     telefono: phone,
     citta: city,
-    prodotto: productNames,
-    baqa: plan.label,
-    subtotale: subtotal + ' د.م',
-    sconto: saved + ' د.م',
-    totale: total + ' د.م',
-    note: note || '—'
+    note: note || '',
+    pack: plan.label,
+    prodotti: selectedSkus.map(function (s) { return PRODUCTS[s].full; }).join(' | '),
+    sku: selectedSkus.join(','),
+    num_prodotti: selectedSkus.length,
+    dettaglio_prezzi: selectedSkus.map(function (s) { return PRODUCTS[s].full + ': ' + PRODUCTS[s].price; }).join(' | '),
+    subtotale: subtotal,
+    sconto_pct: Math.round(plan.discount * 100),
+    sconto: saved,
+    totale: total,
+    valuta: 'MAD',
+    pagamento: 'الخلاص عند الاستلام',
+    utm_source: getParam('utm_source'),
+    utm_campaign: getParam('utm_campaign'),
+    utm_content: getParam('utm_content'),
+    fbclid: getParam('fbclid'),
+    referrer: document.referrer || ''
   });
 
   fetch('https://script.google.com/macros/s/AKfycbxnd1pK36psQAPOOoJ7UCTSMWi6wuPbO5RstWxJUX8G5RM0vD3hkuh9WyhQ1dmuP2F7/exec', {
